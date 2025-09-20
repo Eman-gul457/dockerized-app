@@ -10,8 +10,6 @@ It includes healthchecks, a persistent Postgres volume, and a demo endpoint that
 [![Compose](https://img.shields.io/badge/Compose-v2-1D63ED?logo=docker&logoColor=white)](#)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
-> 🔗 **(Optional) Docker Hub:** https://hub.docker.com/r/emangul199/dockerized-app  
-> _Replace `YOUR_DOCKERHUB_USER` with your username if you published the image._
 
 ---
 
@@ -33,3 +31,4 @@ It includes healthchecks, a persistent Postgres volume, and a demo endpoint that
 ---
 
 ## 📁 Repository Structure
+
