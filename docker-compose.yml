@@ -1,11 +1,15 @@
+# docker-compose.yml
+# Runs Flask app (web) + PostgreSQL (db) with healthchecks and a persistent volume.
+
 services:
   db:
     image: postgres:16-alpine
     container_name: dockerized-db
+    restart: unless-stopped
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-appuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-apppassword}
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -14,25 +18,31 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    # Expose DB to host tools (change if port is busy)
     ports:
       - "5432:5432"
 
   web:
+    # Build locally from your Dockerfile
     build:
       context: .
       dockerfile: Dockerfile
     image: dockerized-app:local
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     env_file:
       - .env
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - APP_PORT=${APP_PORT:-5000}
+      DB_HOST: db
+      DB_PORT: 5432
+      APP_PORT: ${APP_PORT:-5000}
+    # App available at http://localhost:5000
     ports:
       - "5000:5000"
+    # App healthcheck is defined in the Dockerfile (curl /healthz)
 
 volumes:
   pgdata:
+
